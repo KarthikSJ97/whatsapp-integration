@@ -231,3 +231,16 @@ export async function sendTextMessageWithFallback(
         throw error;
     }
 }
+
+// Helper: Upload media directly to Meta Graph API
+export async function uploadMedia(file: File) {
+    // 1. Create a standard FormData container
+    const formData = new FormData();
+
+    // 2. Set the "file" field expected by whatsapp-api-js
+    formData.append('file', file);
+
+    // 3. Pass the FormData instance to uploadMedia
+    const response = await whatsapp.uploadMedia(config.phoneNumberId, formData);
+    return response; // Returns { id: "MEDIA_ID" }
+}
