@@ -17,6 +17,7 @@ export const messageRoutes = new Elysia({ prefix: '/api' })
             try {
                 let response;
 
+                // 1. If a template is provided, send it first
                 if (body.fallbackTemplateName) {
                     response = await sendTextMessageWithFallback(
                         body.recipientPhone,
@@ -25,9 +26,11 @@ export const messageRoutes = new Elysia({ prefix: '/api' })
                         body.fallbackLanguageCode,
                         body.fallbackBodyVariables
                     );
-                } else {
-                    response = await sendTextMessage(body.recipientPhone, body.text);
                 }
+
+                // 2. ALWAYS attempt to send the free-form text afterward
+                // (Or send ONLY this if no fallbackTemplateName was provided)
+                response = await sendTextMessage(body.recipientPhone, body.text);
 
                 return { success: true, data: response };
             } catch (error: any) {
